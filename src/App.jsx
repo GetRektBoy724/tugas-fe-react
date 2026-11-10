@@ -1,122 +1,97 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState } from "react";
+import INITIAL_PRODUCTS from "./data/products.js";
+import PageHeader from "./components/PageHeader.jsx";
+import SearchBar from "./components/SearchBar.jsx";
+import ProductList from "./components/ProductList.jsx";
+import PageFooter from "./components/PageFooter.jsx";
+import AddProductModal from "./components/AddProductModal.jsx";
+import EditProductModal from "./components/EditProductModal.jsx";
+import DeleteProductModal from "./components/DeleteProductModal.jsx";
 
-function App() {
-  const [count, setCount] = useState(0)
+let nextId = 6;
+
+export default function App() {
+  const [products, setProducts] = useState(INITIAL_PRODUCTS);
+  const [query, setQuery] = useState("");
+  const [modal, setModal] = useState(null);
+
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(query.toLowerCase())
+  );
+
+  function openAddModal() {
+    setModal({ type: "add" });
+  }
+
+  function openEditModal(product) {
+    setModal({ type: "edit", product });
+  }
+
+  function openDeleteModal(product) {
+    setModal({ type: "delete", product });
+  }
+
+  function closeModal() {
+    setModal(null);
+  }
+
+  function handleAdd(newProduct) {
+    setProducts([...products, { id: nextId, ...newProduct }]);
+    nextId += 1;
+    setModal(null);
+  }
+
+  function handleEdit(updatedProduct) {
+    setProducts(
+      products.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+    );
+    setModal(null);
+  }
+
+  function handleDelete(id) {
+    setProducts(products.filter((p) => p.id !== id));
+    setModal(null);
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="container">
+      <PageHeader />
 
-      <div className="ticks"></div>
+      <button type="button" className="add-button" onClick={openAddModal}>
+        + Tambah Produk
+      </button>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      <SearchBar
+        query={query}
+        onQueryChange={setQuery}
+        resultCount={filteredProducts.length}
+      />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <ProductList
+        products={filteredProducts}
+        onEdit={openEditModal}
+        onDelete={openDeleteModal}
+      />
+
+      <PageFooter shown={filteredProducts.length} total={products.length} />
+
+      {modal?.type === "add" && (
+        <AddProductModal onClose={closeModal} onSave={handleAdd} />
+      )}
+      {modal?.type === "edit" && (
+        <EditProductModal
+          product={modal.product}
+          onClose={closeModal}
+          onSave={handleEdit}
+        />
+      )}
+      {modal?.type === "delete" && (
+        <DeleteProductModal
+          product={modal.product}
+          onClose={closeModal}
+          onDelete={handleDelete}
+        />
+      )}
+    </div>
+  );
 }
-
-export default App
