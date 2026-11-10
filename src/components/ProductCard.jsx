@@ -7,12 +7,12 @@ export default function ProductCard({ product, onEdit, onDelete }) {
       <h3 className="product-name">{product.name}</h3>
       <strong className="product-price">{formatRupiah(product.price)}</strong>
       <div className="product-actions">
-        <button type="button" onClick={() => onEdit(product)}>
+        <button type="button" className="edit-btn" onClick={() => onEdit(product)}>
           Edit
         </button>
         <button
           type="button"
-          className="danger"
+          className="delete-btn"
           onClick={() => onDelete(product)}
         >
           Hapus

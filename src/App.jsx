@@ -56,11 +56,12 @@ export default function App() {
 
   return (
     <div className="container">
-      <PageHeader />
-
-      <button type="button" className="add-button" onClick={openAddModal}>
-        + Tambah Produk
-      </button>
+      <div className="top-row">
+        <PageHeader />
+        <button type="button" className="add-button" onClick={openAddModal}>
+          + Tambah Produk
+        </button>
+      </div>
 
       <SearchBar
         query={query}
