@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./App.css";
 import INITIAL_PRODUCTS from "./data/products.js";
 import PageHeader from "./components/PageHeader.jsx";
 import SearchBar from "./components/SearchBar.jsx";
