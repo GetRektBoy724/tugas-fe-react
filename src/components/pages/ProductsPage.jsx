@@ -44,7 +44,7 @@ export default function ProductsPage() {
           onDelete={(product) => setDialog({ mode: "delete", product })}
         />
         <p className="mt-6 text-sm text-gray-500">
-          Menampilkan {visible.length} dari {products.length} produk
+          Menampilkan {visible.length} dari {products?.length ?? 0} produk
         </p>
       </RequestState>
 

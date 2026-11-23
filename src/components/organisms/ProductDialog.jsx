@@ -14,14 +14,17 @@ export default function ProductDialog({ mode, product, onClose, onSaved }) {
   const firstField = useRef(null);
   const navigate = useNavigate();
 
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
   useEffect(() => {
     firstField.current?.focus();
     function onKeyDown(event) {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") onCloseRef.current();
     }
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [onClose]);
+  }, []);
 
   const titles = {
     add: "Tambah Produk",
@@ -113,7 +116,7 @@ export default function ProductDialog({ mode, product, onClose, onSaved }) {
               </p>
             )}
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={onClose} disabled={submitting}>
+              <Button type="button" variant="outline" onClick={onClose} disabled={submitting}>
                 Batal
               </Button>
               <Button variant="danger" type="submit" disabled={submitting}>
@@ -141,7 +144,6 @@ export default function ProductDialog({ mode, product, onClose, onSaved }) {
             <Field
               label="Harga (Rp)"
               type="number"
-              min="1"
               placeholder="Contoh: 5000"
               hint="Harga harus lebih dari 0."
               value={price}
@@ -158,7 +160,7 @@ export default function ProductDialog({ mode, product, onClose, onSaved }) {
               </p>
             )}
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={onClose} disabled={submitting}>
+              <Button type="button" variant="outline" onClick={onClose} disabled={submitting}>
                 Batal
               </Button>
               <Button type="submit" disabled={submitting}>
